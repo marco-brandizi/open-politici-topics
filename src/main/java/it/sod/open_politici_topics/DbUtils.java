@@ -27,9 +27,10 @@ public class DbUtils
 		
 		try
 		{
-			Properties props = new Properties ();
-			props.load ( DbUtils.class.getResourceAsStream ( "db.properties" ) );
-			return props;
+			connProperties = new Properties ();
+			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			connProperties.load ( loader.getResourceAsStream ( "db.properties" ) );
+			return connProperties;
 		} 
 		catch ( IOException ex ) {
 			throw new RuntimeException ( "Error while trying to load db.properties: " + ex.getMessage (), ex );
@@ -61,7 +62,7 @@ public class DbUtils
 			Statement stmt = conn.createStatement ();
 			conn.rollback ();
 			stmt.execute ( "DROP TABLE IF EXISTS topics" );
-			stmt.execute ( "CREATE TABLE topics ( id INT AUTO_INCREMENT, twitter VARCHAR(30), topic VARCHAR(100), weight INT" );
+			stmt.execute ( "CREATE TABLE topics ( id INT AUTO_INCREMENT, twitter VARCHAR(30), topic VARCHAR(255), weight INT )" );
 			stmt.execute ( "CREATE INDEX twitter ON topics ( twitter )" );
 			stmt.execute ( "CREATE INDEX topic ON topics ( topic )" );
 			stmt.execute ( "CREATE INDEX weight ON topics ( weight )" );

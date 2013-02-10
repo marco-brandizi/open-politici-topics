@@ -2,5 +2,4 @@
 /.classpath
 /.project
 /.settings
-/topics.json
-/db.properties
+/politician_topics_db

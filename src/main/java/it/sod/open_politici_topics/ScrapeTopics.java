@@ -7,6 +7,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,10 +47,13 @@ import uk.ac.ebi.utils.regex.RegEx;
 public class ScrapeTopics
 {
 	public static void main ( String[] args ) throws Exception
-	{
+	{		
 		String urlStr = args.length > 0 ? args[0] : "http://politici.openpolis.it//argument/tagsVisualization/period/all";
 		err.printf ( "Starting from '%s'\n", urlStr );
 		
+		// Better to open the DB ASAP, errors can be reported early, without wasting time 
+		Connection conn = DbUtils.resetDb ();
+
 		URL url = new URL ( urlStr );
 		String topicsHTML = IOUtils.readInputFully ( new InputStreamReader ( url.openStream () ) );
 		
@@ -73,9 +78,8 @@ public class ScrapeTopics
 		
 		Set<String> declarationURLs = new HashSet<String> (), politicianURLs = new HashSet<String> ();
 		
-		out.print ( "[" );
-		String topSep = "";
-		
+		PreparedStatement insertStmt = conn.prepareStatement ( "INSERT INTO topics ( twitter, topic, weight ) VALUES (?, ?, ?)" );
+				
 		for ( Node tagNode = tagItr.nextNode (); tagNode != null; tagNode = tagItr.nextNode () )
 		{
 			// /argomento/4335
@@ -157,21 +161,18 @@ public class ScrapeTopics
 				List<String[]> topics = getPoliticianTopics ( politicianDOM );
 				if ( topics == null || topics.size () == 0 ) continue;
 				
-				out.println ( topSep + "{" );
-				out.printf  ( "  \"twitterAccount\" : \"%s\", \n", politicianTwitter );
-				out.println ( "  \"topics\" : [" );
-
-				String sep = "";
 				for ( String[] topicRec: topics ) 
 				{
-					out.printf ( "%s    { \"topicLabel\" : \"%s\", \"topicWeight\": %s }", sep, topicRec [ 0 ], topicRec [ 1 ] );
-					sep = ",\n";
+					insertStmt.setString ( 1, politicianTwitter );
+					insertStmt.setString ( 2, topicRec [ 0 ] );
+					insertStmt.setInt ( 3, Integer.parseInt ( StringUtils.abbreviate ( topicRec [ 1 ], 255 ) ) );
+					insertStmt.addBatch ();
+					err.println ( "Added: " + insertStmt );
 				}
-				out.print ( "}" );
-				topSep = ",\n\n";	
+				insertStmt.executeBatch ();
+				conn.commit ();
 			}	
 		}
-		out.println ( "]\n" );
 	}
 	
 	
