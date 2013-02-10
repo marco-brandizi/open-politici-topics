@@ -4,6 +4,7 @@
 package it.sod.open_politici_topics;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -29,6 +30,8 @@ public class DbUtils
 		{
 			connProperties = new Properties ();
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			InputStream propIn = loader.getResourceAsStream ( "/db.properties" );
+			if ( propIn == null ) propIn = loader.getResourceAsStream ( "db.properties" );
 			connProperties.load ( loader.getResourceAsStream ( "db.properties" ) );
 			return connProperties;
 		} 
