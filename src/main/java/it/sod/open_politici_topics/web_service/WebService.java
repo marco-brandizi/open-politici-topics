@@ -27,11 +27,14 @@ import org.codehaus.jettison.json.JSONArray;
  * 
  * <h2>Installation</h2>
  * 
- * <p>You have to first setup this as a web application, putting the .war created for this project (into target) somewhere
- * into your Java Application server (eg, Tomcat)</p>
+ * <p>Build the .war with 'mvn package', you'll get it in target/</p>
  * 
- * <p>You can change the H2 database that is used as index by placing a db.properties file in your classpath. See the
- * examples in src/main/resources. WARNING: this has to be the same DB used by {@link ScrapeTopics}.</p> 
+ * <p>Then you to put such .war somewhere into your Java Application server (eg, Tomcat)</p>
+ * 
+ * <p>You can change the H2 database that is used as index by changing the main/resources/db.properties and rebuilding. 
+ * WARNING: this has to be the same DB used by {@link ScrapeTopics}.</p>
+ * 
+ * <p>You can also run the web server quick-n-dirty via Maven: mvn jetty:run (not recommended in production).</p>  
  * 
  * <h2>Invocation Examples</h2>
  * 

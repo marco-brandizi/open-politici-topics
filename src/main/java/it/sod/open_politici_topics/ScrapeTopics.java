@@ -55,6 +55,8 @@ import uk.ac.ebi.utils.regex.RegEx;
  * {@link WebService web service} are still possible while this update is going on, although users will see partial data during this
  * stage (the databse is zeroed).</p>
  * 
+ * <p>You can also run the scraper from within Maven, see the mvn_run_scraper.sh script (quite a quick-dirty option).</p>
+ * 
  * <dl>
  * <dt>date</dt>
  * <dd>Jan 19, 2013</dd>
