@@ -29,9 +29,9 @@ public class DbUtils
 		try
 		{
 			connProperties = new Properties ();
-			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			InputStream propIn = loader.getResourceAsStream ( "/db.properties" );
-			if ( propIn == null ) propIn = loader.getResourceAsStream ( "db.properties" );
+			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			InputStream propIn = DbUtils.class.getResourceAsStream ( "/db.properties" );
+			if ( propIn == null ) propIn = DbUtils.class.getResourceAsStream ( "db.properties" );
 			connProperties.load ( propIn );
 			return connProperties;
 		} 
