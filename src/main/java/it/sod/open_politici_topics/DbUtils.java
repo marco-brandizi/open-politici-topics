@@ -32,7 +32,7 @@ public class DbUtils
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
 			InputStream propIn = loader.getResourceAsStream ( "/db.properties" );
 			if ( propIn == null ) propIn = loader.getResourceAsStream ( "db.properties" );
-			connProperties.load ( loader.getResourceAsStream ( "db.properties" ) );
+			connProperties.load ( propIn );
 			return connProperties;
 		} 
 		catch ( IOException ex ) {
