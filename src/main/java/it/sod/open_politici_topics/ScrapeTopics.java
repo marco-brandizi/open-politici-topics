@@ -164,17 +164,21 @@ public class ScrapeTopics
 				DocumentBuilderFactory dbf1 = DocumentBuilderFactory.newInstance ();
 				dbf1.setSchema ( null );
 				Document politicianDOM = null;
+				Exception tex = null;
 				try
 				{
 					DocumentBuilder db1 = dbf1.newDocumentBuilder ();		
 					politicianDOM = db1.parse ( new ByteArrayInputStream ( politicianHTML.getBytes () ) );
 				} 
-				catch ( ParserConfigurationException | SAXException | IOException ex ) 
-				{
+				catch ( ParserConfigurationException ex ) {	tex = ex;	}
+				catch ( SAXException ex ) {	tex = ex;	}
+				catch ( IOException ex ) {	tex = ex;	}
+				finally { if ( tex != null ) {
 					err.printf ( "Internal error while parsing HTML from '%s', skipping\n", politicianURL );
-					ex.printStackTrace ( err );
+					tex.printStackTrace ( err );
 					continue;
-				}
+				}}
+				
 				if ( politicianDOM == null ) continue; 
 				
 				List<String[]> topics = getPoliticianTopics ( politicianDOM );
@@ -220,18 +224,23 @@ public class ScrapeTopics
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance ();
 		NodeIterator itemItr = null;
+		Exception tex = null;
+		
 		try
 		{
 			DocumentBuilder db = dbf.newDocumentBuilder ();		
 			Document doc = db.parse ( new ByteArrayInputStream ( topicRSSHTML.getBytes () ) );
 			itemItr = XPathAPI.selectNodeIterator ( doc, "//entry/link" );
 		} 
-		catch ( ParserConfigurationException | SAXException | IOException | TransformerException ex )
-		{
-			err.printf ( "Error while declaration URLs for topic #%s, returning null\n", tagId );
-			ex.printStackTrace ( err );
+		catch ( ParserConfigurationException ex ) {	tex = ex;	}
+		catch ( SAXException ex ) {	tex = ex;	}
+		catch ( IOException ex ) { tex = ex; }
+		catch ( TransformerException ex ) {	tex = ex;	}
+		finally { if ( tex != null ) {
+			err.printf ( "Error while processing declaration URLs for topic #%s, returning null\n", tagId );
+			tex.printStackTrace ( err );
 			return result;
-		}
+		}}
 		
 		if ( itemItr == null ) return result;
 		for ( Node itemNode = itemItr.nextNode (); itemNode != null; itemNode = itemItr.nextNode () )

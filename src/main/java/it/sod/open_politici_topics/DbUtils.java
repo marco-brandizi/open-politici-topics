@@ -49,7 +49,10 @@ public class DbUtils
 				connProperties.getProperty ( "connection.password" ) 
 			);
 		} 
-		catch ( ClassNotFoundException | SQLException ex ) {
+		catch ( ClassNotFoundException ex ) {
+			throw new RuntimeException ( "Error while trying to load politician/topics data: " + ex.getMessage (), ex );
+		}
+		catch ( SQLException ex ) {
 			throw new RuntimeException ( "Error while trying to load politician/topics data: " + ex.getMessage (), ex );
 		}
 	}
