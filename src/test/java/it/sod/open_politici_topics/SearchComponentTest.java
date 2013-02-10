@@ -22,5 +22,7 @@ public class SearchComponentTest
 		
 		for ( String twitter: sc.findPoliticianTwitterAccount ( "lavoro, sport Cultura" ) )
 			out.println ( twitter );
+		
+		// TODO: check the results expected from the test-DB
 	}
 }

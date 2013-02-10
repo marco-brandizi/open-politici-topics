@@ -3,6 +3,8 @@ package it.sod.open_politici_topics;
 import static java.lang.System.err;
 import static java.lang.System.out;
 
+import it.sod.open_politici_topics.web_service.WebService;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,8 +35,25 @@ import uk.ac.ebi.utils.io.IOUtils;
 import uk.ac.ebi.utils.regex.RegEx;
 
 /**
+ *
+ * <p>Builds a search database, containings weighted associations between political topics and politician's twitter accounts.
+ * It scrapes <a href = 'http://politici.openpolis.it//argument/tagsVisualization/period/all'>this URL from open-politici</a>, 
+ * where topic tags are linked to politician declarations and these in turn to politician profiles.</p>
+ *  
+ * <h3>How to invoke</h3>
  * 
- * TODO: Comment me!
+ * <p>Once you have a .war inside a server, use: 
+ * 
+ * <pre>
+ *   java -jar path/to/the/war it.sod.open_politici_topics.ScrapeTopics [topics-url]
+ * </pre></p>
+ * 
+ * <p>topics-url is http://politici.openpolis.it//argument/tagsVisualization/period/all by default, it could be
+ * http://politici.openpolis.it//argument/tagsVisualization/period/week or month for testing purposes.</p>
+ * 
+ * <p>This command-line update procedure can work in parallel with the web application and hence searches via
+ * {@link WebService web service} are still possible while this update is going on, although users will see partial data during this
+ * stage (the databse is zeroed).</p>
  * 
  * <dl>
  * <dt>date</dt>
@@ -173,6 +192,7 @@ public class ScrapeTopics
 				conn.commit ();
 			}	
 		}
+		conn.close ();
 	}
 	
 	

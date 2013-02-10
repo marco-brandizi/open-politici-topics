@@ -3,6 +3,7 @@
  */
 package it.sod.open_politici_topics.web_service;
 
+import it.sod.open_politici_topics.ScrapeTopics;
 import it.sod.open_politici_topics.SearchComponent;
 
 import java.util.List;
@@ -21,17 +22,33 @@ import org.codehaus.jettison.json.JSONArray;
 
 
 /**
- * <p>The web service version of the {@link EntityMappingManager} interface. This uses Jersey and set up a REST web service
- * See {@link uk.ac.ebi.fg.myequivalents.webservices.client.EntityMappingWSClientTest} for usage examples.</p>
+ * <p>Web service to search politician twitter accounts based on related topics. This is based on data found at 
+ * open-politici (see {@link ScrapeTopics} for details).</p>
  * 
- * <p>The web service is backed by a {@link ManagerFactory}, which needs to be configured via Spring, see {@link Resources}.
- * By default {@link DbManagerFactory} is used.</p>
+ * <h2>Installation</h2>
  * 
- * <p>Usually these services are located at /ws/mapping, e.g., 
- * "http://localhost:8080/ws/mapping/get?entityId=service1:acc1". You can build the path by appending the value in 
- * &#064;Path to /mapping.</p> 
- *
- * <dl><dt>date</dt><dd>Sep 11, 2012</dd></dl>
+ * <p>You have to first setup this as a web application, putting the .war created for this project (into target) somewhere
+ * into your Java Application server (eg, Tomcat)</p>
+ * 
+ * <p>You can change the H2 database that is used as index by placing a db.properties file in your classpath. See the
+ * examples in src/main/resources. WARNING: this has to be the same DB used by {@link ScrapeTopics}.</p> 
+ * 
+ * <h2>Invocation Examples</h2>
+ * 
+ * <ul>
+ * 	<li><a href = "http://localhost:8080/ws/open-pol-topics/get-by-topics/json?q=lavoro">Example 1</a></li>
+ * 	<li><a href = "http://localhost:8080/ws/open-pol-topics/get-by-topics/xml?q=lavoro, sport,istruzione">Example 2</a></li>
+ * </ul>
+ * 
+ * <p>The query string contains topic keywords that are (partially matched) against topic tags. The string is split 
+ * by using spaces or commas and the order in which keywords are specified doesn't count (yet...). Moreover, the search
+ * is still pretty basic (essentially some SQL LIKE) and we plan more advanced features (eg, TDF/TF, stemming and all that
+ * can be provided via Lucene) for the future.</p>
+ * 
+ * <p>For the moemtn, results are internally scored (by how many times a tag was associated to a politician) and returned in descending 
+ * score order.</p>  
+ * 
+ * <dl><dt>date</dt><dd>Feb 10, 2013</dd></dl>
  * @author Marco Brandizi
  *
  */

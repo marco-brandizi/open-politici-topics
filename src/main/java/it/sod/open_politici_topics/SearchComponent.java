@@ -68,6 +68,8 @@ public class SearchComponent
 				}
 			}
 
+			conn.close ();
+			
 			// Now sort based on the score
 			//
 			SortedSet<Map.Entry<String, Integer>> accountsIndex = new TreeSet<Map.Entry<String, Integer>> (
